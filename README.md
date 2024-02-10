@@ -19,12 +19,12 @@ The project focuses on gaining experience in parallel programming on shared and 
 
 ## Repository Structure
 
-- `src/`: Contains the source code files for the sequential, OpenMP, and MPI implementations.
-- `include/`: Optional directory for header files if needed.
-- `data/`: Contains input and output data files.
-- `doc/`: Documentation directory containing the report discussing implementation details and results.
-- `Makefile`: Contains instructions for compiling the code.
-- `README.md`: Instructions and information about the project.
+- `serial/`: Contains the source code files for the serial implementation, along with a Makefile for compilation. Additional source files such as `gen_initial_grid.c`, `simulation.c`, and `print_result.c` may be included if the code is split into multiple files. The directory also contains a `report.pdf` file discussing implementation details and results.
+
+- `omp/`: Contains the source code files for the OpenMP implementation, along with a Makefile for compilation. Similar to the serial directory, additional source files and a report are included.
+
+- `mpi/`: Contains the source code files for the MPI implementation, along with a Makefile for compilation. Additional source files and a report are included as in the other directories.
+
 
 ## Instructions
 
