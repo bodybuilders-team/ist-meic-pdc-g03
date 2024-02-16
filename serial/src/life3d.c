@@ -4,6 +4,8 @@
 #include "constants.h"
 #include "grid.h"
 
+// To run: make clean && make && bin/life3d 4 4 .4 100
+
 /**
  * @brief Entry point of the program.
  *
@@ -31,9 +33,6 @@ int main(int argc, char *argv[])
     // Generate initial grid
     char ***grid = gen_initial_grid(num_cells, density, seed);
 
-    print_grid(grid, num_cells);
-    return 0;
-
     int *max_counts = (int *)calloc(N_SPECIES + 1, sizeof(int));
     int *max_generations = (int *)calloc(N_SPECIES + 1, sizeof(int));
 
@@ -49,6 +48,6 @@ int main(int argc, char *argv[])
 
     // Print the result to stdout
     print_result(max_counts, max_generations);
-    
+
     return 0;
 }
