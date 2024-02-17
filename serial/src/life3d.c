@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     // Generate initial grid
     char ***grid = gen_initial_grid(num_cells, density, seed);
 
-    int *max_counts = (int *)calloc(N_SPECIES + 1, sizeof(int));
+    long *max_counts = (long *)calloc(N_SPECIES + 1, sizeof(long));
     int *max_generations = (int *)calloc(N_SPECIES + 1, sizeof(int));
 
     exec_time = -omp_get_wtime();

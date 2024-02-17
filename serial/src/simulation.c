@@ -12,7 +12,7 @@
  * @param max_generations Array of maximum generations for each species
  * @param num_generations Number of generations to simulate
  */
-void simulation(char ***grid, int N, int *max_counts, int *max_generations, int num_generations)
+void simulation(char ***grid, int N, long *max_counts, int *max_generations, int num_generations)
 {
     int x, y, z, i, j, k;
     int count_neighbors;
@@ -43,13 +43,39 @@ void simulation(char ***grid, int N, int *max_counts, int *max_generations, int 
             next_grid[x][y] = next_grid[x][0] + y * N;
     }
 
-    // Perform simulation for the specified number of generations
-    for (int gen = 0; gen < num_generations; gen++)
-    {
-        // Print for debugging
-        printf("Generation %d    ------------------------------\n", gen);
-        print_grid(grid, N);
+    // Initial grid (generation 0)
 
+    // Print for debugging
+    printf("Generation 0    ------------------------------\n");
+    print_grid(grid, N);
+
+    long species_counts[N_SPECIES + 1] = {0};
+
+    for (x = 0; x < N; x++)
+    {
+        for (y = 0; y < N; y++)
+        {
+            for (z = 0; z < N; z++)
+            {
+                if (grid[x][y][z] > 0)
+                    species_counts[(int)grid[x][y][z]]++;
+            }
+        }
+    }
+
+    // Update the maximum counts and generations
+    for (int s = 1; s <= N_SPECIES; s++)
+    {
+        if (species_counts[s] > max_counts[s])
+        {
+            max_counts[s] = species_counts[s];
+            max_generations[s] = 0;
+        }
+    }
+
+    // Perform simulation for the specified number of generations
+    for (int gen = 1; gen <= num_generations; gen++)
+    {
         // Iterate over each cell in the grid
         for (x = 0; x < N; x++)
         {
@@ -70,9 +96,9 @@ void simulation(char ***grid, int N, int *max_counts, int *max_generations, int 
                             {
                                 if (i == 0 && j == 0 && k == 0)
                                     continue; // Skip the current cell
-                                int nx = x + i;
-                                int ny = y + j;
-                                int nz = z + k;
+                                int nx = (x + i + N) % N;
+                                int ny = (y + j + N) % N;
+                                int nz = (z + k + N) % N;
                                 if (nx >= 0 && nx < N && ny >= 0 && ny < N && nz >= 0 && nz < N)
                                 {
                                     int species = grid[nx][ny][nz];
@@ -120,18 +146,19 @@ void simulation(char ***grid, int N, int *max_counts, int *max_generations, int 
             }
         }
 
-        int species_counts[N_SPECIES + 1] = {0};
+        long species_counts[N_SPECIES + 1] = {0};
 
-        // Update the grid with the next generation
+        // Update the grid with the next generation and count the number of each species
         for (x = 0; x < N; x++)
         {
             for (y = 0; y < N; y++)
             {
                 for (z = 0; z < N; z++)
                 {
-                    if (grid[x][y][z] > 0)
-                        species_counts[grid[x][y][z]]++;
                     grid[x][y][z] = next_grid[x][y][z];
+
+                    if (grid[x][y][z] > 0)
+                        species_counts[(int)grid[x][y][z]]++;
                 }
             }
         }
@@ -145,6 +172,10 @@ void simulation(char ***grid, int N, int *max_counts, int *max_generations, int 
                 max_generations[s] = gen;
             }
         }
+
+        // Print for debugging
+        printf("Generation %d    ------------------------------\n", gen);
+        print_grid(grid, N);
     }
 
     // Free memory for next_grid

@@ -7,11 +7,11 @@
  * @param max_counts Array of maximum counts for each species
  * @param max_generations Array of maximum generations for each species
  */
-void print_result(int max_counts[N_SPECIES + 1], int max_generations[N_SPECIES + 1])
+void print_result(long max_counts[N_SPECIES + 1], int max_generations[N_SPECIES + 1])
 {
     for (int species = 1; species <= N_SPECIES; species++)
     {
-        printf("%d %d %d\n", species, max_counts[species], max_generations[species]);
+        printf("%d %ld %d\n", species, max_counts[species], max_generations[species]);
     }
 }
 
