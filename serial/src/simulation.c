@@ -3,15 +3,6 @@
 #include "constants.h"
 #include "grid.h"
 
-/**
- * @brief Perform the simulation for the specified number of generations
- *
- * @param grid 3D grid
- * @param N Size of the grid
- * @param max_counts Array of maximum counts for each species
- * @param max_generations Array of maximum generations for each species
- * @param num_generations Number of generations to simulate
- */
 void simulation(char ***grid, int N, long *max_counts, int *max_generations, int num_generations)
 {
     int x, y, z, i, j, k;
@@ -43,11 +34,9 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
             next_grid[x][y] = next_grid[x][0] + y * N;
     }
 
-    // Initial grid (generation 0)
-
-    // Print for debugging
-    printf("Generation 0    ------------------------------\n");
-    print_grid(grid, N);
+    // Print for debugging - Initial grid (generation 0)
+    //printf("Generation 0    ------------------------------\n");
+    //print_grid(grid, N);
 
     long species_counts[N_SPECIES + 1] = {0};
 
@@ -174,8 +163,8 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
         }
 
         // Print for debugging
-        printf("Generation %d    ------------------------------\n", gen);
-        print_grid(grid, N);
+        //printf("Generation %d    ------------------------------\n", gen);
+        //print_grid(grid, N);
     }
 
     // Free memory for next_grid

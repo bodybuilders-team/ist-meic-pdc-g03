@@ -1,12 +1,6 @@
 #include <stdio.h>
 #include "constants.h"
 
-/**
- * @brief Print the result for each species in increasing order
- *
- * @param max_counts Array of maximum counts for each species
- * @param max_generations Array of maximum generations for each species
- */
 void print_result(long max_counts[N_SPECIES + 1], int max_generations[N_SPECIES + 1])
 {
     for (int species = 1; species <= N_SPECIES; species++)
@@ -15,12 +9,6 @@ void print_result(long max_counts[N_SPECIES + 1], int max_generations[N_SPECIES 
     }
 }
 
-/**
- * @brief Print the grid
- *
- * @param grid 3D grid
- * @param N Size of the grid
- */
 void print_grid(char ***grid, int N)
 {
     for (int x = 0; x < N; x++)
