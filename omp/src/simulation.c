@@ -50,6 +50,7 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
             for (z = 0; z < N; z++)
             {
                 if (grid[x][y][z] > 0)
+                    #pragma omp atomic
                     species_counts[(int)grid[x][y][z]]++;
             }
         }
