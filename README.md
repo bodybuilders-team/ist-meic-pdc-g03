@@ -1,6 +1,6 @@
-# ist-meic-pdc-gXX
+# ist-meic-pdc-g03
 
-> Parallel and Distributed Computing project of group XX - MEIC @ IST 2023/2024.
+> Parallel and Distributed Computing project of group 03 - MEIC @ IST 2023/2024.
 
 ## Authors
 
@@ -10,7 +10,7 @@
 
 @IST<br>
 Master in Computer Science and Computer Engineering<br>
-Parallel and Distributed Computing - Group XX<br>
+Parallel and Distributed Computing - Group 03<br>
 Summer  Semester of 2023/2024
 
 ## About the Project
