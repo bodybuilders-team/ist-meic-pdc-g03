@@ -34,11 +34,15 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
             next_grid[x][y] = next_grid[x][0] + y * N;
     }
 
+    // Pointers to the grids for buffer swapping
+    char ***current_grid = grid;
+    char ***current_next_grid = next_grid;
+
     // Print for debugging - Initial grid (generation 0)
     //printf("Generation 0    ------------------------------\n");
     //print_grid(grid, N);
 
-    long species_counts[N_SPECIES + 1] = {0};
+    long initial_species_counts[N_SPECIES + 1] = {0};
 
     for (x = 0; x < N; x++)
     {
@@ -47,7 +51,7 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
             for (z = 0; z < N; z++)
             {
                 if (grid[x][y][z] > 0)
-                    species_counts[(int)grid[x][y][z]]++;
+                    initial_species_counts[(int)grid[x][y][z]]++;
             }
         }
     }
@@ -55,9 +59,9 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
     // Update the maximum counts and generations
     for (int s = 1; s <= N_SPECIES; s++)
     {
-        if (species_counts[s] > max_counts[s])
+        if (initial_species_counts[s] > max_counts[s])
         {
-            max_counts[s] = species_counts[s];
+            max_counts[s] = initial_species_counts[s];
             max_generations[s] = 0;
         }
     }
@@ -65,6 +69,8 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
     // Perform simulation for the specified number of generations
     for (int gen = 1; gen <= num_generations; gen++)
     {
+        long species_counts[N_SPECIES + 1] = {0};
+
         // Iterate over each cell in the grid
         for (x = 0; x < N; x++)
         {
@@ -90,7 +96,7 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
                                 int nz = (z + k + N) % N;
                                 if (nx >= 0 && nx < N && ny >= 0 && ny < N && nz >= 0 && nz < N)
                                 {
-                                    int species = grid[nx][ny][nz];
+                                    int species = current_grid[nx][ny][nz];
                                     if (species > 0)
                                     {
                                         count_neighbors++;
@@ -102,12 +108,16 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
                     }
 
                     // Apply the rules of the Game of Life
-                    if (grid[x][y][z] > 0)
+                    if (current_grid[x][y][z] > 0)
                     {
                         if (count_neighbors <= 4 || count_neighbors > 13)
-                            next_grid[x][y][z] = 0; // Cell dies
+                            current_next_grid[x][y][z] = 0; // Cell dies
                         else
-                            next_grid[x][y][z] = grid[x][y][z]; // Cell survives
+                        {
+                            // TODO Save in a variable to avoid heap memory access? char = current_grid[x][y][z];
+                            current_next_grid[x][y][z] = current_grid[x][y][z]; // Cell survives
+                            species_counts[(int)current_grid[x][y][z]]++;
+                        }
                     }
                     else
                     {
@@ -124,33 +134,23 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
                                     max_count = neighbor_species_counts[s];
                                 }
                             }
-                            next_grid[x][y][z] = max_species; // Cell becomes alive with majority species
+                            // TODO Save in a variable to avoid heap memory access? char = max_species;
+                            current_next_grid[x][y][z] = max_species; // Cell becomes alive with majority species
+                            species_counts[max_species]++;
                         }
                         else
                         {
-                            next_grid[x][y][z] = 0; // Cell remains dead
+                            current_next_grid[x][y][z] = 0; // Cell remains dead
                         }
                     }
                 }
             }
         }
 
-        long species_counts[N_SPECIES + 1] = {0};
-
-        // Update the grid with the next generation and count the number of each species
-        for (x = 0; x < N; x++)
-        {
-            for (y = 0; y < N; y++)
-            {
-                for (z = 0; z < N; z++)
-                {
-                    grid[x][y][z] = next_grid[x][y][z];
-
-                    if (grid[x][y][z] > 0)
-                        species_counts[(int)grid[x][y][z]]++;
-                }
-            }
-        }
+        // Swap the current grid with the next grid
+        char ***temp = current_grid;
+        current_grid = current_next_grid;
+        current_next_grid = temp;
 
         // Update the maximum counts and generations
         for (int s = 1; s <= N_SPECIES; s++)

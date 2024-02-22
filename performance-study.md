@@ -25,12 +25,20 @@ We will be studying how the implementations can be optimized, looking into Big O
 ## Serial
 This is the basis of OMP implementation too, so figuring out the optimizations for this will help in the OMP implementation too.
 
-### Three grids strategy (3GS)
+### Buffer Swap Strategy
 
-Without 3GS: 30.5s
-With 3GS: ?
+#### Serial
+* Without Buffer Swap: 356.7s
+* With Buffer Swap: 
 
 # Sample Instances
+
+```
+life3d 1000 64 0.4 0
+life3d 200 128 .5 1000
+life3d 10 512 .4 0
+life3d 3 1024 .4 100
+```
 
 ```
 $ life3d 1000 64 0.4 0
