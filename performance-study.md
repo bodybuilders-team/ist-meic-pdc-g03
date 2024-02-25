@@ -13,8 +13,8 @@ The following table shows the performance of the program across different versio
 ### NYCK-LAPTOP
 |  Version | 1000 64 0.4 0 | 200 128 .5 1000 | 10 512 .4 0 | 3 1024 .4 100 |
 |----------|---------------|-----------------|-------------|---------------|
-| Serial   |               |                 |             |               |
-| OMP      |     25.5s     |       38.3s     |    132.6s   |     337.4s    |
+| Serial   |     31.5s     |                 |             |               |
+| OMP      |     22.5s     |       38.3s     |    132.6s   |     337.4s    |
 | MPI      |               |                 |             |               |
 
 
@@ -29,7 +29,7 @@ This is the basis of OMP implementation too, so figuring out the optimizations f
 
 #### Serial
 * Without Buffer Swap: 356.7s
-* With Buffer Swap: 
+* With Buffer Swap: 358.2s
 
 # Sample Instances
 

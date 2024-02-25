@@ -114,7 +114,6 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
                             current_next_grid[x][y][z] = 0; // Cell dies
                         else
                         {
-                            // TODO Save in a variable to avoid heap memory access? char = current_grid[x][y][z];
                             current_next_grid[x][y][z] = current_grid[x][y][z]; // Cell survives
                             species_counts[(int)current_grid[x][y][z]]++;
                         }
@@ -134,7 +133,6 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
                                     max_count = neighbor_species_counts[s];
                                 }
                             }
-                            // TODO Save in a variable to avoid heap memory access? char = max_species;
                             current_next_grid[x][y][z] = max_species; // Cell becomes alive with majority species
                             species_counts[max_species]++;
                         }
