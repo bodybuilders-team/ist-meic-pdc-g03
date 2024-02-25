@@ -6,8 +6,8 @@ The following table shows the performance of the program across different versio
 ### NYCK-DESKTOP
 |  Version | 1000 64 0.4 0 | 200 128 .5 1000 | 10 512 .4 0 | 3 1024 .4 100 |
 |----------|---------------|-----------------|-------------|---------------|
-| Serial   |               |                 |             |               |
-| OMP      |               |                 |             |               |
+| Serial   |     23.3s     |      40.5s      |    168.6s   |               |
+| OMP      |     7.7s      |      12.0s      |             |               |
 | MPI      |               |                 |             |               |
 
 ### NYCK-LAPTOP
@@ -24,6 +24,9 @@ We will be studying how the implementations can be optimized, looking into Big O
 
 ## Serial
 This is the basis of OMP implementation too, so figuring out the optimizations for this will help in the OMP implementation too.
+
+### Swap buffer
+In serial, swap buffer is consistently around 2% faster than without it.
 
 ### Buffer Swap Strategy
 
