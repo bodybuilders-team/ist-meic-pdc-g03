@@ -42,7 +42,7 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
 
     long initial_species_counts[N_SPECIES + 1] = {0};
 
-    #pragma omp parallel for collapse(3) shared(grid, N, initial_species_counts)
+    #pragma omp parallel for collapse(3) shared(grid, N) reduction(+:initial_species_counts[:N_SPECIES+1])
     for (int x = 0; x < N; x++)
     {
         for (int y = 0; y < N; y++)
@@ -50,7 +50,6 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
             for (int z = 0; z < N; z++)
             {
                 if (grid[x][y][z] > 0)
-                    #pragma omp atomic
                     initial_species_counts[(int)grid[x][y][z]]++;
             }
         }
@@ -73,7 +72,7 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
         long species_counts[N_SPECIES + 1] = {0};
 
         // Iterate over each cell in the grid
-        #pragma omp parallel for collapse(3) shared(current_grid, current_next_grid, N) reduction(+:species_counts[:N_SPECIES+1])
+        #pragma omp parallel for collapse(3) shared(current_grid, N) reduction(+:species_counts[:N_SPECIES+1])
         for (int x = 0; x < N; x++)
         {
             for (int y = 0; y < N; y++)
