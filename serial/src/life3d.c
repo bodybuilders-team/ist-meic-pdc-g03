@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     exec_time += omp_get_wtime();
 
     // Print execution time
-    fprintf(stderr, "%.1fs\n", exec_time);
+    //fprintf(stderr, "%.1fs\n", exec_time);
 
     // Print the result to stdout
     print_result(max_counts, max_generations);

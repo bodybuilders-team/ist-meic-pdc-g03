@@ -7,13 +7,13 @@ LDFLAGS = -lm
 INCLUDE_DIR = include
 SRC_DIR = src
 BUILD_DIR = build
-BIN_DIR = bin
+BIN_DIR = .#bin
 DOC_DIR = doc
 
 # Source files
 SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
-EXEC = $(BIN_DIR)/life3d-omp
+EXEC = $(BIN_DIR)/life3d
 
 # Create the build and bin directories if any of them doesn't exist
 $(shell mkdir -p $(BUILD_DIR) $(BIN_DIR))

@@ -7,7 +7,7 @@ LDFLAGS = -lm
 INCLUDE_DIR = include
 SRC_DIR = src
 BUILD_DIR = build
-BIN_DIR = bin
+BIN_DIR = .#bin
 DOC_DIR = doc
 
 # Source files
