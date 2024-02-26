@@ -1,6 +1,6 @@
 # Compiler options
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -O3 -I$(INCLUDE_DIR) -fopenmp
+CFLAGS = -Wall -Wextra -std=c99 -O3 -I$(INCLUDE_DIR) -fopenmp -g
 LDFLAGS = -lm
 
 # Directories

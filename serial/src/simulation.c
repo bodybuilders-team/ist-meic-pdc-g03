@@ -5,7 +5,6 @@
 
 void simulation(char ***grid, int N, long *max_counts, int *max_generations, int num_generations)
 {
-    int x, y, z, i, j, k;
 
     // Temporary grid to hold the next generation
     char ***next_grid = (char ***)malloc(N * sizeof(char **));
@@ -15,7 +14,7 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
         exit(1);
     }
 
-    for (x = 0; x < N; x++)
+    for (int x = 0; x < N; x++)
     {
         next_grid[x] = (char **)malloc(N * sizeof(char *));
         if (next_grid[x] == NULL)
@@ -29,7 +28,7 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
             fprintf(stderr, "Failed to allocate memory for next_grid\n");
             exit(1);
         }
-        for (y = 1; y < N; y++)
+        for (int y = 1; y < N; y++)
             next_grid[x][y] = next_grid[x][0] + y * N;
     }
 
@@ -43,11 +42,11 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
 
     long initial_species_counts[N_SPECIES + 1] = {0};
 
-    for (x = 0; x < N; x++)
+    for (int x = 0; x < N; x++)
     {
-        for (y = 0; y < N; y++)
+        for (int y = 0; y < N; y++)
         {
-            for (z = 0; z < N; z++)
+            for (int z = 0; z < N; z++)
             {
                 if (grid[x][y][z] > 0)
                     initial_species_counts[(int)grid[x][y][z]]++;
@@ -71,22 +70,22 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
         long species_counts[N_SPECIES + 1] = {0};
 
         // Iterate over each cell in the grid
-        for (x = 0; x < N; x++)
+        for (int x = 0; x < N; x++)
         {
-            for (y = 0; y < N; y++)
+            for (int y = 0; y < N; y++)
             {
-                for (z = 0; z < N; z++)
+                for (int z = 0; z < N; z++)
                 {
                     // Count the number of live neighbors for the current cell
                     int count_neighbors = 0;
                     // Determine the majority species of the neighbors
                     int neighbor_species_counts[N_SPECIES + 1] = {0};
 
-                    for (i = -1; i <= 1; i++)
+                    for (int i = -1; i <= 1; i++)
                     {
-                        for (j = -1; j <= 1; j++)
+                        for (int j = -1; j <= 1; j++)
                         {
-                            for (k = -1; k <= 1; k++)
+                            for (int k = -1; k <= 1; k++)
                             {
                                 if (i == 0 && j == 0 && k == 0)
                                     continue; // Skip the current cell
@@ -165,7 +164,7 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
     }
 
     // Free memory for next_grid
-    for (x = 0; x < N; x++)
+    for (int x = 0; x < N; x++)
     {
         free(next_grid[x][0]);
         free(next_grid[x]);
