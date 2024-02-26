@@ -92,14 +92,12 @@ void simulation(char ***grid, int N, long *max_counts, int *max_generations, int
                                 int nx = (x + i + N) % N;
                                 int ny = (y + j + N) % N;
                                 int nz = (z + k + N) % N;
-                                if (nx >= 0 && nx < N && ny >= 0 && ny < N && nz >= 0 && nz < N)
+                                
+                                int species = current_grid[nx][ny][nz];
+                                if (species > 0)
                                 {
-                                    int species = current_grid[nx][ny][nz];
-                                    if (species > 0)
-                                    {
-                                        count_neighbors++;
-                                        neighbor_species_counts[species]++;
-                                    }
+                                    count_neighbors++;
+                                    neighbor_species_counts[species]++;
                                 }
                             }
                         }
