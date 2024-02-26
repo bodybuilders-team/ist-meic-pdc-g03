@@ -3,6 +3,7 @@
 #include <omp.h>
 #include "constants.h"
 #include "grid.h"
+#include "stdint.h"
 
 // To run: make clean && make && bin/life3d-omp 1000 64 0.4 0
 
@@ -23,8 +24,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int num_generations = atoi(argv[1]);
-    int num_cells = atoi(argv[2]);
+    uint32_t num_generations = atoi(argv[1]);
+    uint32_t num_cells = atoi(argv[2]);
     double density = atof(argv[3]);
     int seed = atoi(argv[4]);
 
@@ -33,8 +34,8 @@ int main(int argc, char *argv[])
     // Generate initial grid
     char ***grid = gen_initial_grid(num_cells, density, seed);
 
-    long *max_counts = (long *)calloc(N_SPECIES + 1, sizeof(long));
-    int *max_generations = (int *)calloc(N_SPECIES + 1, sizeof(int));
+    uint64_t *max_counts = (uint64_t *)calloc(N_SPECIES + 1, sizeof(long));
+    uint32_t *max_generations = (uint32_t *)calloc(N_SPECIES + 1, sizeof(int));
 
     exec_time = -omp_get_wtime();
 

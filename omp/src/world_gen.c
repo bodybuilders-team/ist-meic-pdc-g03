@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #define N_SPECIES 9
 
@@ -40,9 +41,9 @@ float r4_uni()
     return 0.5 + 0.2328306e-09 * (seed_in + (int)seed);
 }
 
-char ***gen_initial_grid(long long N, float density, int input_seed)
+char ***gen_initial_grid(uint64_t N, float density, int input_seed)
 {
-    int x, y, z;
+    uint32_t x, y, z;
 
     char ***grid = (char ***)malloc(N * sizeof(char **));
     if (grid == NULL)

@@ -6,8 +6,8 @@ The following table shows the performance of the program across different versio
 ### NYCK-DESKTOP
 |  Version | 1000 64 0.4 0 | 200 128 .5 1000 | 10 512 .4 0 | 3 1024 .4 100 |
 |----------|---------------|-----------------|-------------|---------------|
-| Serial   |     23.3s     |      40.5s      |    168.6s   |               |
-| OMP      |     7.7s      |      12.0s      |             |               |
+| Serial   |     12.4s     |      22.5s      |             |               |
+| OMP      |     3.0s      |      12.0s      |    15.5s    |               |
 | MPI      |               |                 |             |               |
 
 ### NYCK-LAPTOP
