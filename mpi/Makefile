@@ -1,19 +1,19 @@
 # Compiler options
 CC = mpicc
-CFLAGS = -Wall -Wextra -std=c99 -O3 -I$(INCLUDE_DIR)
+CFLAGS = -Wall -Wextra -std=c99 -O2 -I$(INCLUDE_DIR)
 LDFLAGS = -lm
 
 # Directories
 INCLUDE_DIR = include
 SRC_DIR = src
 BUILD_DIR = build
-BIN_DIR = bin
+BIN_DIR = .#bin
 DOC_DIR = doc
 
 # Source files
 SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
-EXEC = $(BIN_DIR)/life3d-mpi
+EXEC = $(BIN_DIR)/life3d
 
 # Create the build and bin directories if any of them doesn't exist
 $(shell mkdir -p $(BUILD_DIR) $(BIN_DIR))

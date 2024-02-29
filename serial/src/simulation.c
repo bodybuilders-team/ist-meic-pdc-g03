@@ -34,8 +34,8 @@ void simulation(char ***grid, uint32_t N, uint64_t *max_counts, uint32_t *max_ge
     }
 
     // Print for debugging - Initial grid (generation 0)
-    //printf("Generation 0    ------------------------------\n");
-    //print_grid(grid, N);
+    // printf("Generation 0    ------------------------------\n");
+    // print_grid(grid, N);
 
     uint64_t initial_species_counts[N_SPECIES + 1] = {0};
 
@@ -90,7 +90,7 @@ void simulation(char ***grid, uint32_t N, uint64_t *max_counts, uint32_t *max_ge
                                 uint32_t nx = (x + i + N) % N;
                                 uint32_t ny = (y + j + N) % N;
                                 uint32_t nz = (z + k + N) % N;
-                                
+
                                 uint8_t species = grid[nx][ny][nz];
                                 if (species > 0)
                                 {
@@ -157,8 +157,8 @@ void simulation(char ***grid, uint32_t N, uint64_t *max_counts, uint32_t *max_ge
         }
 
         // Print for debugging
-        //printf("Generation %d    ------------------------------\n", gen);
-        //print_grid(grid, N);
+        // printf("Generation %d    ------------------------------\n", gen);
+        // print_grid(grid, N);
     }
 
     // Free memory for next_grid
