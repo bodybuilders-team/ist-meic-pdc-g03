@@ -81,14 +81,14 @@ void simulation(char ***grid, uint32_t N, uint64_t *max_counts, uint32_t *max_ge
 
                     for (int8_t i = -1; i <= 1; i++)
                     {
+                        uint32_t nx = (x + i + N) % N;
                         for (int8_t j = -1; j <= 1; j++)
                         {
+                            uint32_t ny = (y + j + N) % N;
                             for (int8_t k = -1; k <= 1; k++)
                             {
                                 if (i == 0 && j == 0 && k == 0)
                                     continue; // Skip the current cell
-                                uint32_t nx = (x + i + N) % N;
-                                uint32_t ny = (y + j + N) % N;
                                 uint32_t nz = (z + k + N) % N;
 
                                 uint8_t species = grid[nx][ny][nz];

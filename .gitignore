@@ -5,3 +5,4 @@
 serial/life3d
 omp/life3d
 mpi/life3d
+*.zip
