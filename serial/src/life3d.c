@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <omp.h>
+
 #include "constants.h"
 #include "grid.h"
-#include "stdint.h"
 
 // To run: make clean && make && bin/life3d 4 4 .4 100
 

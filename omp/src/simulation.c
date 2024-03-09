@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <omp.h>
+
 #include "constants.h"
 #include "grid.h"
-#include "stdint.h"
 
 void simulation(char ***grid, uint32_t N, uint64_t *max_counts, uint32_t *max_generations, uint32_t num_generations)
 {

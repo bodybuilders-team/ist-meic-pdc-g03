@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <omp.h>
+#include <mpi.h>
 
 #include "constants.h"
 #include "grid.h"
 
 void simulation(char ***grid, uint32_t N, uint64_t *max_counts, uint32_t *max_generations, uint32_t num_generations)
 {
-
     // Temporary grid to hold the next generation
     char ***next_grid = (char ***)malloc(N * sizeof(char **));
     if (next_grid == NULL)
@@ -39,7 +40,7 @@ void simulation(char ***grid, uint32_t N, uint64_t *max_counts, uint32_t *max_ge
     // print_grid(grid, N);
 
     uint64_t initial_species_counts[N_SPECIES + 1] = {0};
-
+    
     for (uint32_t x = 0; x < N; x++)
     {
         for (uint32_t y = 0; y < N; y++)
@@ -52,6 +53,7 @@ void simulation(char ***grid, uint32_t N, uint64_t *max_counts, uint32_t *max_ge
             }
         }
     }
+    MPI_Allreduce(MPI_IN_PLACE, initial_species_counts, N_SPECIES + 1, MPI_UINT64_T, MPI_SUM, MPI_COMM_WORLD);
 
     // Update the maximum counts and generations
     for (uint8_t s = 1; s <= N_SPECIES; s++)
@@ -68,7 +70,8 @@ void simulation(char ***grid, uint32_t N, uint64_t *max_counts, uint32_t *max_ge
     {
         uint64_t species_counts[N_SPECIES + 1] = {0};
 
-        // Iterate over each cell in the grid
+// Iterate over each cell in the grid
+#pragma omp parallel for collapse(3) shared(grid, N) reduction(+ : species_counts[ : N_SPECIES + 1])
         for (uint32_t x = 0; x < N; x++)
         {
             for (uint32_t y = 0; y < N; y++)
@@ -130,7 +133,7 @@ void simulation(char ***grid, uint32_t N, uint64_t *max_counts, uint32_t *max_ge
                                     max_count = neighbor_species_counts[s];
                                 }
                             }
-                            next_grid[x][y][z] = max_species; // Cell becomes alive with majority species
+                            next_grid[x][y][z] = max_species; // Cell becomes alive with majority
                             species_counts[max_species]++;
                         }
                         else

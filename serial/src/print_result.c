@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include <stdint.h>
+
 #include "constants.h"
-#include "stdint.h"
 
 void print_result(uint64_t max_counts[N_SPECIES + 1], int max_generations[N_SPECIES + 1])
 {

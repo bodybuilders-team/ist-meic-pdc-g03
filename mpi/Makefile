@@ -1,6 +1,6 @@
 # Compiler options
 CC = mpicc
-CFLAGS = -Wall -Wextra -std=c99 -O2 -I$(INCLUDE_DIR)
+CFLAGS = -Wall -Wextra -std=c99 -O2 -fopenmp -I$(INCLUDE_DIR)
 LDFLAGS = -lm
 
 # Directories

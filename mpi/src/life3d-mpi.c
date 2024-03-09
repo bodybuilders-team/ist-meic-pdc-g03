@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <omp.h>
-
+#include <mpi.h>
 #include "constants.h"
 #include "grid.h"
 
@@ -17,6 +17,12 @@
  */
 int main(int argc, char *argv[])
 {
+    // Initialize MPI
+    MPI_Init(&argc, &argv);
+    int rank, size;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
     if (argc != 5)
     {
         fprintf(stderr, "Usage: %s <number of generations> <number of cells per side of the cube> <density of the initial population> <seed for the random number generator>\n", argv[0]);
@@ -49,5 +55,6 @@ int main(int argc, char *argv[])
     // Print the result to stdout
     print_result(max_counts, max_generations);
 
+    MPI_Finalize();
     return 0;
 }

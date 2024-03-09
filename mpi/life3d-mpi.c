@@ -1,1 +1,0 @@
-// Will contain implementation of the MPI version of the 3D life game

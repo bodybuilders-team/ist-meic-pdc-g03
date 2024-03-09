@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 
 #define N_SPECIES 9
 
@@ -39,23 +41,11 @@ float r4_uni()
     return 0.5 + 0.2328306e-09 * (seed_in + (int)seed);
 }
 
-/**
- * @brief Generates an initial grid for the simulation.
- *
- * This function generates an initial grid for the simulation with a given size and density.
- * The grid is a 3D matrix of size `N x N x N` where each cell contains a value between 0 and 9.
- * The density parameter is used to determine the probability of a cell being occupied by a species.
- *
- * @param N The size of the grid.
- * @param density The probability of a cell being occupied by a species.
- * @param input_seed The seed value used to initialize the random number generator.
- * @return A 3D matrix representing the initial grid for the simulation. e.g. `grid[x][y][z]`
- */
-char ***gen_initial_grid(long long N, float density, int input_seed)
+char ***gen_initial_grid(uint64_t N, float density, int input_seed)
 {
-    int x, y, z;
+    uint32_t x, y, z;
 
-    grid = (char ***)malloc(N * sizeof(char **));
+    char ***grid = (char ***)malloc(N * sizeof(char **));
     if (grid == NULL)
     {
         printf("Failed to allocate matrix\n");
