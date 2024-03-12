@@ -28,13 +28,13 @@ The project focuses on gaining experience in parallel programming on shared and 
 
 ## Instructions
 
+To compile and run the code, enter in the respective directory of the version you want to run.
+
 To compile the code, use the provided Makefile. Ensure you have the necessary dependencies installed.
 
 To run the code:
 - For the serial implementation: `./life3d <parameters>`
-- For the OpenMP implementation: `./life3d-omp <parameters>`
-- For the MPI implementation: `mpirun -np <num_processes> ./life3d-mpi <parameters>`
+- For the OpenMP implementation: `./life3d <parameters>`
+- For the MPI implementation: `mpirun -np <num_processes> ./life3d <parameters>`
 
 Replace `<parameters>` with the required input parameters.
-
-Refer to the documentation in the `doc/` directory for detailed information on the implementations, including performance results and analysis.

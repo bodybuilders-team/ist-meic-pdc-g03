@@ -35,12 +35,12 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
     }
 
     // Print for debugging - Initial grid (generation 0)
-    //printf("Generation 0    ------------------------------\n");
-    //print_grid(grid, N);
+    // printf("Generation 0    ------------------------------\n");
+    // print_grid(grid, N);
 
     int64_t initial_species_counts[N_SPECIES + 1] = {0};
 
-    #pragma omp parallel for collapse(3) shared(grid, N) reduction(+:initial_species_counts[:N_SPECIES+1])
+    #pragma omp parallel for collapse(3) shared(grid, N) reduction(+:initial_species_counts[:N_SPECIES + 1])
     for (int32_t x = 0; x < N; x++)
     {
         for (int32_t y = 0; y < N; y++)
@@ -70,7 +70,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
         int64_t species_counts[N_SPECIES + 1] = {0};
 
         // Iterate over each cell in the grid
-        #pragma omp parallel for shared(grid, N) reduction(+:species_counts[:N_SPECIES+1])
+        #pragma omp parallel for shared(grid, N) reduction(+:species_counts[:N_SPECIES + 1])
         for (int32_t x = 0; x < N; x++)
         {
             for (int32_t y = 0; y < N; y++)
@@ -81,37 +81,28 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
                     int16_t alive_neighbors = 0;
                     // Determine the majority species of the neighbors
                     int16_t neighbor_species_counts[N_SPECIES + 1] = {0};
-                    
+
                     for (int8_t i = -1; i <= 1; i++)
                     {
                         int32_t nx = x + i;
-
-                        if (nx >= N)
-                            nx = 0;
-                        else if (nx < 0)
-                            nx = N - 1;
+                        nx = nx >= N ? 0 : nx < 0 ? N - 1
+                                                  : nx;
 
                         for (int8_t j = -1; j <= 1; j++)
                         {
                             int32_t ny = y + j;
-
-                            if (ny >= N)
-                                ny = 0;
-                            else if (ny < 0)
-                                ny = N - 1;
+                            ny = ny >= N ? 0 : ny < 0 ? N - 1
+                                                      : ny;
 
                             for (int8_t k = -1; k <= 1; k++)
                             {
                                 if (i == 0 && j == 0 && k == 0)
                                     continue; // Skip the current cell
-                                
-                                int32_t nz = z + k;
 
-                                if (nz >= N)
-                                    nz = 0;
-                                else if (nz < 0)
-                                    nz = N - 1;
-                           
+                                int32_t nz = z + k;
+                                nz = nz >= N ? 0 : nz < 0 ? N - 1
+                                                          : nz;
+
                                 int16_t species = grid[nx][ny][nz];
                                 if (species > 0)
                                 {
@@ -178,8 +169,8 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
         }
 
         // Print for debugging
-        //printf("Generation %d    ------------------------------\n", gen);
-        //print_grid(grid, N);
+        // printf("Generation %d    ------------------------------\n", gen);
+        // print_grid(grid, N);
     }
 
     // Free memory for next_grid
