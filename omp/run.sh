@@ -4,7 +4,7 @@ make clean && make
 
 for n in {1..10}
 do
-    ./life3d 1000 64 0.4 0
+    ./life3d 3 1024 .4 100
 done
 
 # ./life3d 1000 64 0.4 0

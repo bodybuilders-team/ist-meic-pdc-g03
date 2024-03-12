@@ -41,9 +41,9 @@ float r4_uni()
     return 0.5 + 0.2328306e-09 * (seed_in + (int)seed);
 }
 
-char ***gen_initial_grid(uint64_t N, float density, int input_seed)
+char ***gen_initial_grid(int64_t N, float density, int input_seed)
 {
-    uint32_t x, y, z;
+    int32_t x, y, z;
 
     char ***grid = (char ***)malloc(N * sizeof(char **));
     if (grid == NULL)

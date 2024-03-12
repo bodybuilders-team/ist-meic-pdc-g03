@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    uint32_t num_generations = atoi(argv[1]);
-    uint32_t num_cells = atoi(argv[2]);
+    int32_t num_generations = atoi(argv[1]);
+    int32_t num_cells = atoi(argv[2]);
     double density = atof(argv[3]);
     int seed = atoi(argv[4]);
 
@@ -39,8 +39,8 @@ int main(int argc, char *argv[])
     // Generate initial grid
     char ***grid = gen_initial_grid(num_cells, density, seed);
 
-    uint64_t *max_counts = (uint64_t *)calloc(N_SPECIES + 1, sizeof(long));
-    uint32_t *max_generations = (uint32_t *)calloc(N_SPECIES + 1, sizeof(int));
+    int64_t *max_counts = (int64_t *)calloc(N_SPECIES + 1, sizeof(long));
+    int32_t *max_generations = (int32_t *)calloc(N_SPECIES + 1, sizeof(int));
 
     exec_time = -omp_get_wtime();
 
