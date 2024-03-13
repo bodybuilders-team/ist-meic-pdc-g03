@@ -41,40 +41,20 @@ float r4_uni()
     return 0.5 + 0.2328306e-09 * (seed_in + (int)seed);
 }
 
-char ***gen_initial_grid(int64_t N, float density, int input_seed)
+char *gen_initial_grid(int64_t N, float density, int input_seed)
 {
-    int32_t x, y, z;
-
-    char ***grid = (char ***)malloc(N * sizeof(char **));
+    int32_t size = N * N * N;
+    char *grid = (char *)malloc(size * sizeof(char));
     if (grid == NULL)
     {
-        printf("Failed to allocate matrix\n");
+        fprintf(stderr, "Failed to allocate memory for grid\n");
         exit(1);
-    }
-    for (x = 0; x < N; x++)
-    {
-        grid[x] = (char **)malloc(N * sizeof(char *));
-        if (grid[x] == NULL)
-        {
-            printf("Failed to allocate matrix\n");
-            exit(1);
-        }
-        grid[x][0] = (char *)calloc(N * N, sizeof(char));
-        if (grid[x][0] == NULL)
-        {
-            printf("Failed to allocate matrix\n");
-            exit(1);
-        }
-        for (y = 1; y < N; y++)
-            grid[x][y] = grid[x][0] + y * N;
     }
 
     init_r4uni(input_seed);
-    for (x = 0; x < N; x++)
-        for (y = 0; y < N; y++)
-            for (z = 0; z < N; z++)
-                if (r4_uni() < density)
-                    grid[x][y][z] = (int)(r4_uni() * N_SPECIES) + 1;
+    for (int i = 0; i < size; i++)
+        if (r4_uni() < density)
+            grid[i] = (int)(r4_uni() * N_SPECIES) + 1;
 
     return grid;
 }

@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     double exec_time;
 
     // Generate initial grid
-    char ***grid = gen_initial_grid(num_cells, density, seed);
+    char *grid = gen_initial_grid(num_cells, density, seed);
 
     int64_t *max_counts = (int64_t *)calloc(N_SPECIES + 1, sizeof(long));
     int32_t *max_generations = (int32_t *)calloc(N_SPECIES + 1, sizeof(int));
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     exec_time += omp_get_wtime();
 
     // Print execution time
-    // fprintf(stderr, "%.1fs\n", exec_time);
+    fprintf(stderr, "%.1fs\n", exec_time);
 
     // Print the result to stdout
     print_result(max_counts, max_generations);

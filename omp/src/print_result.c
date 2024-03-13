@@ -11,7 +11,7 @@ void print_result(int64_t max_counts[N_SPECIES + 1], int max_generations[N_SPECI
     }
 }
 
-void print_grid(char ***grid, int32_t N)
+void print_grid(char *grid, int32_t N)
 {
     for (int32_t x = 0; x < N; x++)
     {
@@ -20,10 +20,10 @@ void print_grid(char ***grid, int32_t N)
         {
             for (int32_t z = 0; z < N; z++)
             {
-                if (grid[x][y][z] == 0)
-                    printf(". ");
-                else
-                    printf("%d ", grid[x][y][z]);
+                int32_t index = x * N * N + y * N + z;
+                if (grid[index] == 0)
+                    printf(". ");                else
+                    printf("%d ", grid[index]);
             }
             printf("\n");
         }

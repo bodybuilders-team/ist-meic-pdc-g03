@@ -15,7 +15,7 @@
  * @param input_seed The seed value used to initialize the random number generator.
  * @return A 3D matrix representing the initial grid for the simulation. e.g. `grid[x][y][z]`
  */
-char ***gen_initial_grid(int64_t N, float density, int input_seed);
+char *gen_initial_grid(int64_t N, float density, int input_seed);
 
 /**
  * @brief Perform the simulation for the specified number of generations
@@ -26,7 +26,7 @@ char ***gen_initial_grid(int64_t N, float density, int input_seed);
  * @param max_generations Array of maximum generations for each species
  * @param num_generations Number of generations to simulate
  */
-void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_generations, int32_t num_generations);
+void simulation(char *grid, int32_t N, int64_t *max_counts, int32_t *max_generations, int32_t num_generations);
 
 /**
  * @brief Print the result for each species in increasing order
@@ -42,4 +42,4 @@ void print_result(int64_t max_counts[N_SPECIES + 1], int32_t max_generations[N_S
  * @param grid 3D grid
  * @param N Size of the grid
  */
-void print_grid(char ***grid, int32_t N);
+void print_grid(char *grid, int32_t N);
