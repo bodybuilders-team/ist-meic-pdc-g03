@@ -17,7 +17,7 @@
  * @param end_x The ending x-coordinate for the grid.
  * @return A 3D matrix representing the initial grid for the simulation. e.g. `grid[x][y][z]`
  */
-char ***gen_initial_grid(int64_t N, float density, int input_seed, int start_x, int end_x)
+char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int start_x, int end_x)
 
 /**
  * @brief Perform the simulation for the specified number of generations
