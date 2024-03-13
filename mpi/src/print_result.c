@@ -11,19 +11,19 @@ void print_result(int64_t max_counts[N_SPECIES + 1], int max_generations[N_SPECI
     }
 }
 
-void print_grid(char ***grid, int32_t N)
+void print_grid(char ***grid, int32_t N, int start_x, int end_x)
 {
-    for (int32_t x = 0; x < N; x++)
+    for (int32_t x = start_x; x < end_x; x++)
     {
         printf("Layer %d:\n", x);
         for (int32_t y = 0; y < N; y++)
         {
             for (int32_t z = 0; z < N; z++)
             {
-                if (grid[x][y][z] == 0)
+                if (grid[x - start_x][y][z] == 0)
                     printf(". ");
                 else
-                    printf("%d ", grid[x][y][z]);
+                    printf("%d ", grid[x - start_x][y][z]);
             }
             printf("\n");
         }
