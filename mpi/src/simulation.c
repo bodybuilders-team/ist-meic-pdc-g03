@@ -37,37 +37,34 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
     }
 
     // Print for debugging - Initial grid (generation 0)
-    // printf("Generation 0    ------------------------------\n");
-    // print_grid(grid, N);
+    printf("Generation 0    ------------------------------\n");
+    print_grid(grid, N, start_x, end_x);
 
     int64_t initial_species_counts[N_SPECIES + 1] = {0};
 
-    #pragma omp parallel for collapse(3) shared(grid, N) reduction(+:initial_species_counts[:N_SPECIES + 1])
-    for (int32_t x = start_x; x < end_x; x++)
+    #pragma omp parallel for shared(grid, N) reduction(+:initial_species_counts[:N_SPECIES + 1])
+    for (int32_t x = 1; x < my_n + 1; x++)
     {
         for (int32_t y = 0; y < N; y++)
         {
             for (int32_t z = 0; z < N; z++)
             {
-                int16_t species = grid[x - start_x][y][z];
+                int16_t species = grid[x][y][z];
                 if (species > 0)
                     initial_species_counts[species]++;
             }
         }
     }
+    printf("Process starts %d with %d\n", start_x, initial_species_counts[1]);
 
     // Perform global reduction for initial_species_counts
     MPI_Reduce(initial_species_counts, max_counts, N_SPECIES + 1, MPI_INT64_T, MPI_SUM, 0, MPI_COMM_WORLD);
-
-    // Update the maximum counts and generations
-    /*for (int16_t s = 1; s <= N_SPECIES; s++)
+    for (int16_t s = 1; s <= N_SPECIES; s++)
     {
-        if (initial_species_counts[s] > max_counts[s])
-        {
-            max_counts[s] = initial_species_counts[s];
-            max_generations[s] = 0;
-        }
-    }*/
+        max_generations[s] = 0;
+    }
+
+    print_result(max_counts, max_generations);
 
     // Perform simulation for the specified number of generations
     for (int32_t gen = 1; gen <= num_generations; gen++)
@@ -76,7 +73,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
 
         // Iterate over each cell in the grid
         #pragma omp parallel for shared(grid, next_grid, N) reduction(+:species_counts[:N_SPECIES + 1])
-        for (int32_t x = 0; x < my_n; x++)
+        for (int32_t x = 1; x < my_n + 1; x++)
         {
             for (int32_t y = 0; y < N; y++)
             {
@@ -89,9 +86,9 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
 
                     for (int8_t i = -1; i <= 1; i++)
                     {
-                        int32_t nx = x + start_x + i;
-                        nx = nx >= N ? 0 : nx < 0 ? N - 1
-                                                  : nx;
+                        int32_t nx = x + i;
+                        //nx = nx >= N ? 0 : nx < 0 ? N - 1
+                                                  //: nx;
 
                         for (int8_t j = -1; j <= 1; j++)
                         {
@@ -108,7 +105,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
                                 nz = nz >= N ? 0 : nz < 0 ? N - 1
                                                           : nz;
 
-                                int16_t species = grid[x][ny][nz];
+                                int16_t species = grid[nx][ny][nz];
                                 if (species > 0)
                                 {
                                     alive_neighbors++;
@@ -164,19 +161,29 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
         next_grid = temp;
 
         // Update the maximum counts and generations
-        MPI_Reduce(species_counts, max_counts, N_SPECIES + 1, MPI_INT64_T, MPI_SUM, 0, MPI_COMM_WORLD);
-        /*for (int16_t s = 1; s <= N_SPECIES; s++)
+        int64_t temp_species_counts[N_SPECIES + 1] = {0};
+        MPI_Reduce(species_counts, temp_species_counts, N_SPECIES + 1, MPI_INT64_T, MPI_SUM, 0, MPI_COMM_WORLD);
+        for (int16_t s = 1; s <= N_SPECIES; s++)
         {
-            if (species_counts[s] > max_counts[s])
+            if (temp_species_counts[s] > max_counts[s])
             {
                 max_counts[s] = species_counts[s];
                 max_generations[s] = gen;
             }
-        }*/
+        }
+
+        // Update my ghost layers and send my first and last layer to my neighbors
+        int rank_to_send = rank == 0 ? size - 1 : rank - 1;
+        MPI_Send(grid[1], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD);
+        MPI_Recv(grid[0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+        rank_to_send = rank == size - 1 ? 0 : rank + 1;
+        MPI_Send(grid[my_n], N * N, MPI_CHAR, rank + 1, 0, MPI_COMM_WORLD);
+        MPI_Recv(grid[my_n + 1], N * N, MPI_CHAR, rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
         // Print for debugging
-        // printf("Generation %d    ------------------------------\n", gen);
-        // print_grid(grid, N);
+        printf("Generation %d    ------------------------------\n", gen);
+        print_grid(grid, N);
     }
 
     // Free memory for next_grid

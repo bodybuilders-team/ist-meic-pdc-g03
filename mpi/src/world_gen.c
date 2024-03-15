@@ -63,14 +63,15 @@ float r4_uni()
 char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int start_x, int end_x)
 {
     int32_t x, y, z;
+    int32_t my_n = end_x - start_x;
 
-    char ***grid = (char ***)malloc((end_x - start_x + 2) * sizeof(char **));
+    char ***grid = (char ***)malloc((my_n + 2) * sizeof(char **));
     if (grid == NULL)
     {
         printf("Failed to allocate matrix\n");
         exit(1);
     }
-    for (x = 0; x < end_x - start_x + 2; x++)
+    for (x = 0; x < my_n + 2; x++)
     {
         grid[x] = (char **)malloc(N * sizeof(char *));
         if (grid[x] == NULL)
@@ -97,15 +98,15 @@ char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int s
                 if (r4_uni() < density)
                 {
                     if (end_x == N && x == 0) // Generate the ghost layer for the last process -> first layer
-                        grid[end_x - start_x + 1][y][z] = (int)(r4_uni() * N_SPECIES) + 1;
+                        grid[my_n + 1][y][z] = (int)(r4_uni() * N_SPECIES) + 1;
                     else
                         r4_uni();
                 }
 
     // Generate actual grid for the process
-    for (x = 0; x < end_x - start_x + 2; x++)
+    for (x = 0; x < my_n + 2; x++)
     {
-        if ((start_x == 0 && x == 0) || (end_x == N && x == end_x - start_x + 1))
+        if ((start_x == 0 && x == 0) || (end_x == N && x == my_n + 1))
             continue;
 
         for (y = 0; y < N; y++)
@@ -117,7 +118,7 @@ char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int s
     // Generate the ghost layer for the first process -> last layer
     if (start_x == 0)
     {
-        for (x = end_x - start_x + 1; x < N - 1; x++)
+        for (x = my_n + 1; x < N - 1; x++)
             for (y = 0; y < N; y++)
                 for (z = 0; z < N; z++)
                     if (r4_uni() < density)

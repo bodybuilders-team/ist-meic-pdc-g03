@@ -57,7 +57,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
     // Update the maximum counts and generations
     for (int16_t s = 1; s <= N_SPECIES; s++)
     {
-        if (initial_species_counts[s] > max_counts[s])
+        if (initial_species_counts[s] > max_counts[s]) // TODO: This if is not necessary right?
         {
             max_counts[s] = initial_species_counts[s];
             max_generations[s] = 0;
