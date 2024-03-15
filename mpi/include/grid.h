@@ -4,11 +4,16 @@
 #include "stdint.h"
 
 /**
- * @brief Generates an initial grid for the simulation.
+ * @brief Generates the initial partial grid for the simulation
  *
  * This function generates an initial grid for the simulation with a given size and density.
  * The grid is a 3D matrix of size `N x N x N` where each cell contains a value between 0 and 9.
  * The density parameter is used to determine the probability of a cell being occupied by a species.
+ * 
+ * A partial grid is generated for the specified range of x-coordinates, so that each MPI process owns a portion of the grid (a number of layers).
+ * Two additional layers are added to the grid to store the state of the neighboring cells, that are required to calculate the next generation.
+ * These layers are added to the beginning and end of the grid, so that the first and last layers of the grid are used to store the state of the neighboring cells,
+ * calculated by the neighboring MPI processes.
  *
  * @param N The size of the grid.
  * @param density The probability of a cell being occupied by a species.
