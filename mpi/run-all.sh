@@ -19,7 +19,7 @@ for config in "${configurations[@]}"; do
     for threads in "${thread_counts[@]}"; do
         export OMP_NUM_THREADS=$threads
         echo "Executing with OMP_NUM_THREADS=$threads and configuration: $config"
-        ./life3d $config
+        ./life3d-mpi $config
         echo "Execution completed."
     done
 done

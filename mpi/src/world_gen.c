@@ -70,43 +70,64 @@ char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int s
         printf("Failed to allocate matrix\n");
         exit(1);
     }
-    for (x = start_x - 1; x < end_x + 1; x++)
+    for (x = 0; x < end_x - start_x + 2; x++)
     {
-        int32_t nx = (x + N) % N;
-
-        grid[nx - start_x + 1] = (char **)malloc(N * sizeof(char *));
-        if (grid[nx - start_x + 1] == NULL)
+        grid[x] = (char **)malloc(N * sizeof(char *));
+        if (grid[x] == NULL)
         {
             printf("Failed to allocate matrix\n");
             exit(1);
         }
-        grid[nx - start_x][0] = (char *)calloc(N * N, sizeof(char));
-        if (grid[nx - start_x][0] == NULL)
+        grid[x][0] = (char *)calloc(N * N, sizeof(char));
+        if (grid[x][0] == NULL)
         {
             printf("Failed to allocate matrix\n");
             exit(1);
         }
         for (y = 1; y < N; y++)
-            grid[nx - start_x][y] = grid[nx - start_x][0] + y * N;
+            grid[x][y] = grid[x][0] + y * N;
     }
 
     init_r4uni(input_seed);
 
-    // Generate other layers and ignore to synchronize the random number generator
+    // Skip layers that are not owned by the process
     for (x = 0; x < start_x - 1; x++)
         for (y = 0; y < N; y++)
             for (z = 0; z < N; z++)
                 if (r4_uni() < density)
-                    r4_uni();
+                {
+                    if (end_x == N && x == 0) // Generate the ghost layer for the last process -> first layer
+                        grid[end_x - start_x + 1][y][z] = (int)(r4_uni() * N_SPECIES) + 1;
+                    else
+                        r4_uni();
+                }
 
-    for (x = start_x - 1; x < end_x + 1; x++)
+    // Generate actual grid for the process
+    for (x = 0; x < end_x - start_x + 2; x++)
+    {
+        if ((start_x == 0 && x == 0) || (end_x == N && x == end_x - start_x + 1))
+            continue;
+
         for (y = 0; y < N; y++)
             for (z = 0; z < N; z++)
                 if (r4_uni() < density)
-                {
-                    int nx = (x + N) % N;
-                    grid[nx - start_x][y][z] = (int)(r4_uni() * N_SPECIES) + 1;
-                }
+                    grid[x][y][z] = (int)(r4_uni() * N_SPECIES) + 1;
+    }
+
+    // Generate the ghost layer for the first process -> last layer
+    if (start_x == 0)
+    {
+        for (x = end_x - start_x + 1; x < N - 1; x++)
+            for (y = 0; y < N; y++)
+                for (z = 0; z < N; z++)
+                    if (r4_uni() < density)
+                        r4_uni();
+
+        for (y = 0; y < N; y++)
+            for (z = 0; z < N; z++)
+                if (r4_uni() < density)
+                    grid[0][y][z] = (int)(r4_uni() * N_SPECIES) + 1;
+    }
 
     return grid;
 }
