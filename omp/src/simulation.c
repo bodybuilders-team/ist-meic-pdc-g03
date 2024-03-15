@@ -40,7 +40,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
 
     int64_t initial_species_counts[N_SPECIES + 1] = {0};
 
-    #pragma omp parallel for collapse(3) shared(grid, N) reduction(+:initial_species_counts[:N_SPECIES + 1])
+    #pragma omp parallel for shared(grid, N) reduction(+:initial_species_counts[:N_SPECIES + 1])
     for (int32_t x = 0; x < N; x++)
     {
         for (int32_t y = 0; y < N; y++)
