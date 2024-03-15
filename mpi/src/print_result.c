@@ -13,6 +13,7 @@ void print_result(int64_t max_counts[N_SPECIES + 1], int max_generations[N_SPECI
 
 void print_grid(char ***grid, int32_t N, int start_x, int end_x)
 {
+    printf("Start_x: %d, End_x: %d\n", start_x, end_x);
     for (int32_t x = start_x; x < end_x; x++)
     {
         printf("Layer %d:\n", x);

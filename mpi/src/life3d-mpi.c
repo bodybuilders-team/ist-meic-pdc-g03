@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     // Generate initial grid for this process
     char ***grid = gen_initial_grid_partial(num_cells, density, seed, start_x, end_x);
-    print_grid(grid, num_cells);
+    print_grid(grid, num_cells, start_x, end_x);
     return 0;
 
     int64_t *max_counts = (int64_t *)calloc(N_SPECIES + 1, sizeof(long));

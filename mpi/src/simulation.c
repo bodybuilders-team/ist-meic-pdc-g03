@@ -164,7 +164,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
         next_grid = temp;
 
         // Update the maximum counts and generations
-        MPI_Reduce(species_counts_private, max_counts, N_SPECIES + 1, MPI_INT64_T, MPI_SUM, 0, MPI_COMM_WORLD);
+        MPI_Reduce(species_counts, max_counts, N_SPECIES + 1, MPI_INT64_T, MPI_SUM, 0, MPI_COMM_WORLD);
         /*for (int16_t s = 1; s <= N_SPECIES; s++)
         {
             if (species_counts[s] > max_counts[s])

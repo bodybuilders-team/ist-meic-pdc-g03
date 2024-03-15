@@ -70,6 +70,14 @@ char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int s
     }
 
     init_r4uni(input_seed);
+
+    // Generate other layers and ignore to synchronize the random number generator
+    for (x = 0; x < start_x; x++)
+        for (y = 0; y < N; y++)
+            for (z = 0; z < N; z++)
+                if (r4_uni() < density)
+                    r4_uni();
+
     for (x = start_x; x < end_x; x++)
         for (y = 0; y < N; y++)
             for (z = 0; z < N; z++)

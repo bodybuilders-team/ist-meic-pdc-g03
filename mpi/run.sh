@@ -2,10 +2,7 @@
 
 make clean && make
 
-for n in {1..10}
-do
-    mpirun -host lab1p8,lab1p10 -np 4 ./life3d 1000 64 0.4 0
-done
+mpirun -host lab1p8,lab1p10 -np 2 ./life3d  4 4 .4 100
 
 # ./life3d 1000 64 0.4 0
 
