@@ -7,7 +7,7 @@
 #include "constants.h"
 #include "grid.h"
 
-void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_generations, int32_t num_generations, int start_x, int end_x)
+void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_generations, int32_t num_generations, int start_x, int end_x, int rank, int size)
 {
     int32_t my_n = end_x - start_x;
     // Temporary grid to hold the next generation
@@ -55,7 +55,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
             }
         }
     }
-    printf("Process starts %d with %d\n", start_x, initial_species_counts[1]);
+    printf("Process starts %d with %ld\n", start_x, initial_species_counts[1]);
 
     // Perform global reduction for initial_species_counts
     MPI_Reduce(initial_species_counts, max_counts, N_SPECIES + 1, MPI_INT64_T, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -183,7 +183,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
 
         // Print for debugging
         printf("Generation %d    ------------------------------\n", gen);
-        print_grid(grid, N);
+        print_grid(grid, N, start_x, end_x);
     }
 
     // Free memory for next_grid

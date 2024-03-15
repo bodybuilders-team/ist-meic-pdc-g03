@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     exec_time = -omp_get_wtime();
 
     // Run the simulation
-    simulation(grid, num_cells, max_counts, max_generations, num_generations, start_x, end_x);
+    simulation(grid, num_cells, max_counts, max_generations, num_generations, start_x, end_x, rank, size);
 
     exec_time += omp_get_wtime();
 

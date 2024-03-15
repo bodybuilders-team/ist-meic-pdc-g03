@@ -34,8 +34,10 @@ char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int s
  * @param num_generations Number of generations to simulate
  * @param start_x The starting x-coordinate for the grid.
  * @param end_x The ending x-coordinate for the grid.
+ * @param rank The rank of the MPI process
+ * @param size The total number of MPI processes
  */
-void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_generations, int32_t num_generations, int start_x, int end_x);
+void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_generations, int32_t num_generations, int start_x, int end_x, int rank, int size);
 
 /**
  * @brief Print the result for each species in increasing order
