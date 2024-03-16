@@ -165,22 +165,14 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
         // Update my ghost layers and send my first and last layer to my neighbors
         int rank_to_send = rank == 0 ? size - 1 : rank - 1;
         MPI_Request request;
-        MPI_Irecv(grid[0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD, &request);
-        MPI_Send(grid[1], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD);
+        MPI_Irecv(grid[0][0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD, &request);
+        MPI_Send(grid[1][0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD);
         MPI_Wait(&request, MPI_STATUS_IGNORE);
-
-        // remap addresses
-        for (int32_t y = 1; y < N; y++)
-            grid[0][y] = grid[0][0] + y * N;
 
         rank_to_send = rank == size - 1 ? 0 : rank + 1;
-        MPI_Irecv(grid[my_n + 1], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD, &request);
-        MPI_Send(grid[my_n], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD);
+        MPI_Irecv(grid[my_n + 1][0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD, &request);
+        MPI_Send(grid[my_n][0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD);
         MPI_Wait(&request, MPI_STATUS_IGNORE);
-
-        // remap addresses
-        for (int32_t y = 1; y < N; y++)
-            grid[my_n + 1][y] = grid[my_n + 1][0] + y * N;
 
         // Swap the current grid with the next grid
         char ***temp = grid;
