@@ -37,8 +37,8 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
     }
 
     // Print for debugging - Initial grid (generation 0)
-    printf("Generation 0    ------------------------------\n");
-    print_grid(grid, N, start_x, end_x);
+    // printf("Generation 0    ------------------------------\n");
+    // print_grid(grid, N, start_x, end_x);
 
     int64_t initial_species_counts[N_SPECIES + 1] = {0};
 
@@ -151,13 +151,13 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
         }
 
         // Update the maximum counts and generations
-        int64_t temp_species_counts[N_SPECIES + 1] = {0};
-        MPI_Reduce(species_counts, temp_species_counts, N_SPECIES + 1, MPI_INT64_T, MPI_SUM, 0, MPI_COMM_WORLD);
+        int64_t total_species_counts[N_SPECIES + 1] = {0};
+        MPI_Reduce(species_counts, total_species_counts, N_SPECIES + 1, MPI_INT64_T, MPI_SUM, 0, MPI_COMM_WORLD);
         for (int16_t s = 1; s <= N_SPECIES; s++)
         {
-            if (temp_species_counts[s] > max_counts[s])
+            if (total_species_counts[s] > max_counts[s])
             {
-                max_counts[s] = species_counts[s];
+                max_counts[s] = total_species_counts[s];
                 max_generations[s] = gen;
             }
         }
@@ -180,8 +180,8 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
         next_grid = temp;
 
         // Print for debugging
-        printf("Generation %d    ------------------------------\n", gen);
-        print_grid(grid, N, start_x, end_x);
+        // printf("Generation %d    ------------------------------\n", gen);
+        // print_grid(grid, N, start_x, end_x);
     }
 
     // Free memory for next_grid
