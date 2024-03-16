@@ -11,14 +11,14 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
 {
     int32_t my_n = end_x - start_x;
     // Temporary grid to hold the next generation
-    char ***next_grid = (char ***)malloc(my_n * sizeof(char **));
+    char ***next_grid = (char ***)malloc((my_n + 2) * sizeof(char **));
     if (next_grid == NULL)
     {
         fprintf(stderr, "Failed to allocate memory for next_grid\n");
         exit(1);
     }
 
-    for (int32_t x = 0; x < my_n; x++)
+    for (int32_t x = 0; x < my_n + 2; x++)
     {
         next_grid[x] = (char **)malloc(N * sizeof(char *));
         if (next_grid[x] == NULL)
@@ -55,16 +55,11 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
             }
         }
     }
-    printf("Process starts %d with %ld\n", start_x, initial_species_counts[1]);
 
     // Perform global reduction for initial_species_counts
     MPI_Reduce(initial_species_counts, max_counts, N_SPECIES + 1, MPI_INT64_T, MPI_SUM, 0, MPI_COMM_WORLD);
     for (int16_t s = 1; s <= N_SPECIES; s++)
-    {
         max_generations[s] = 0;
-    }
-
-    print_result(max_counts, max_generations);
 
     // Perform simulation for the specified number of generations
     for (int32_t gen = 1; gen <= num_generations; gen++)
@@ -155,11 +150,6 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
             }
         }
 
-        // Swap the current grid with the next grid
-        char ***temp = grid;
-        grid = next_grid;
-        next_grid = temp;
-
         // Update the maximum counts and generations
         int64_t temp_species_counts[N_SPECIES + 1] = {0};
         MPI_Reduce(species_counts, temp_species_counts, N_SPECIES + 1, MPI_INT64_T, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -174,12 +164,28 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
 
         // Update my ghost layers and send my first and last layer to my neighbors
         int rank_to_send = rank == 0 ? size - 1 : rank - 1;
+        MPI_Request request;
+        MPI_Irecv(grid[0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD, &request);
         MPI_Send(grid[1], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD);
-        MPI_Recv(grid[0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Wait(&request, MPI_STATUS_IGNORE);
+
+        // remap addresses
+        for (int32_t y = 1; y < N; y++)
+            grid[0][y] = grid[0][0] + y * N;
 
         rank_to_send = rank == size - 1 ? 0 : rank + 1;
-        MPI_Send(grid[my_n], N * N, MPI_CHAR, rank + 1, 0, MPI_COMM_WORLD);
-        MPI_Recv(grid[my_n + 1], N * N, MPI_CHAR, rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Irecv(grid[my_n + 1], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD, &request);
+        MPI_Send(grid[my_n], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD);
+        MPI_Wait(&request, MPI_STATUS_IGNORE);
+
+        // remap addresses
+        for (int32_t y = 1; y < N; y++)
+            grid[my_n + 1][y] = grid[my_n + 1][0] + y * N;
+
+        // Swap the current grid with the next grid
+        char ***temp = grid;
+        grid = next_grid;
+        next_grid = temp;
 
         // Print for debugging
         printf("Generation %d    ------------------------------\n", gen);

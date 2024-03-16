@@ -58,10 +58,12 @@ int main(int argc, char *argv[])
     exec_time += omp_get_wtime();
 
     // Print execution time
-    fprintf(stderr, "%.1f\n", exec_time);
+    if (rank == 0)
+        fprintf(stderr, "%.1f\n", exec_time);
 
     // Print the result to stdout
-    print_result(max_counts, max_generations);
+    if (rank == 0)
+        print_result(max_counts, max_generations);
 
     // Free memory for the grid
     for (int x = 0; x < end_x - start_x; x++)
