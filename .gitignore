@@ -3,8 +3,8 @@
 */build/*
 */bin/*
 serial/life3d
-omp/life3d
-mpi/life3d
+omp/life3d-omp
+mpi/life3d-mpi
 *.zip
 test
 test.c

@@ -82,8 +82,6 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
                     for (int8_t i = -1; i <= 1; i++)
                     {
                         int32_t nx = x + i;
-                        //nx = nx >= N ? 0 : nx < 0 ? N - 1
-                                                  //: nx;
 
                         for (int8_t j = -1; j <= 1; j++)
                         {

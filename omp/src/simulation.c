@@ -40,7 +40,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
 
     int64_t initial_species_counts[N_SPECIES + 1] = {0};
 
-    #pragma omp parallel for shared(grid, N) reduction(+:initial_species_counts[:N_SPECIES + 1])
+    #pragma omp parallel for shared(grid, N) reduction(+ : initial_species_counts[ : N_SPECIES + 1])
     for (int32_t x = 0; x < N; x++)
     {
         for (int32_t y = 0; y < N; y++)
@@ -57,11 +57,8 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
     // Update the maximum counts and generations
     for (int16_t s = 1; s <= N_SPECIES; s++)
     {
-        if (initial_species_counts[s] > max_counts[s]) // TODO: This if is not necessary right?
-        {
-            max_counts[s] = initial_species_counts[s];
-            max_generations[s] = 0;
-        }
+        max_counts[s] = initial_species_counts[s];
+        max_generations[s] = 0;
     }
 
     // Perform simulation for the specified number of generations
@@ -70,7 +67,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
         int64_t species_counts[N_SPECIES + 1] = {0};
 
         // Iterate over each cell in the grid
-        #pragma omp parallel for shared(grid, N) reduction(+:species_counts[:N_SPECIES + 1])
+        #pragma omp parallel for shared(grid, N) reduction(+ : species_counts[ : N_SPECIES + 1])
         for (int32_t x = 0; x < N; x++)
         {
             for (int32_t y = 0; y < N; y++)
