@@ -92,21 +92,22 @@ char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int s
     init_r4uni(input_seed);
 
     // Skip layers that are not owned by the process
-    for (x = 0; x < start_x - 1; x++)
-        for (y = 0; y < N; y++)
-            for (z = 0; z < N; z++)
-                if (r4_uni() < density)
-                {
-                    if (end_x == N && x == 0) // Generate the ghost layer for the last process -> first layer
-                        grid[my_n + 1][y][z] = (int)(r4_uni() * N_SPECIES) + 1;
-                    else
-                        r4_uni();
-                }
+    if (my_n != N)
+        for (x = 0; x < start_x - 1; x++)
+            for (y = 0; y < N; y++)
+                for (z = 0; z < N; z++)
+                    if (r4_uni() < density)
+                    {
+                        if (end_x == N && x == 0) // Generate the ghost layer for the last process -> first layer
+                            grid[my_n + 1][y][z] = (int)(r4_uni() * N_SPECIES) + 1;
+                        else
+                            r4_uni();
+                    }
 
     // Generate actual grid for the process
     for (x = 0; x < my_n + 2; x++)
     {
-        if ((start_x == 0 && x == 0) || (end_x == N && x == my_n + 1))
+        if (my_n != N && ((start_x == 0 && x == 0) || (end_x == N && x == my_n + 1)))
             continue;
 
         for (y = 0; y < N; y++)
@@ -116,7 +117,7 @@ char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int s
     }
 
     // Generate the ghost layer for the first process -> last layer
-    if (start_x == 0)
+    if (start_x == 0 && my_n != N)
     {
         for (x = my_n + 1; x < N - 1; x++)
             for (y = 0; y < N; y++)
@@ -128,6 +129,13 @@ char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int s
             for (z = 0; z < N; z++)
                 if (r4_uni() < density)
                     grid[0][y][z] = (int)(r4_uni() * N_SPECIES) + 1;
+    }
+
+    // Just one process
+    if (my_n == N)
+    {
+        grid[0] = grid[my_n];
+        grid[my_n] = grid[my_n + 1];
     }
 
     return grid;
