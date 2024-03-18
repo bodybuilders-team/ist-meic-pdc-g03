@@ -63,7 +63,7 @@ float r4_uni()
 char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int start_x, int end_x)
 {
     int32_t x, y, z;
-    int32_t my_n = end_x - start_x;
+    int64_t my_n = end_x - start_x;
 
     char ***grid = (char ***)malloc((my_n + 2) * sizeof(char **));
     if (grid == NULL)
@@ -107,8 +107,11 @@ char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int s
     // Generate actual grid for the process
     for (x = 0; x < my_n + 2; x++)
     {
-        if (my_n != N && ((start_x == 0 && x == 0) || (end_x == N && x == my_n + 1)))
+        if ((start_x == 0 && x == 0) || (end_x == N && x == my_n + 1))
             continue;
+
+        if (my_n == N && end_x == my_n + 1)
+            break;
 
         for (y = 0; y < N; y++)
             for (z = 0; z < N; z++)
@@ -131,11 +134,11 @@ char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int s
                     grid[0][y][z] = (int)(r4_uni() * N_SPECIES) + 1;
     }
 
-    // Just one process
+    // If there is only one MPI process, the ghost layers are the same as the grid
     if (my_n == N)
     {
         grid[0] = grid[my_n];
-        grid[my_n] = grid[my_n + 1];
+        grid[my_n + 1] = grid[1];
     }
 
     return grid;

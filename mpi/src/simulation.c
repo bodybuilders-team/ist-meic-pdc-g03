@@ -10,6 +10,8 @@
 void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_generations, int32_t num_generations, int start_x, int end_x, int rank, int size)
 {
     int32_t my_n = end_x - start_x;
+    MPI_Request requests[4];
+
     // Temporary grid to hold the next generation
     char ***next_grid = (char ***)malloc((my_n + 2) * sizeof(char **));
     if (next_grid == NULL)
@@ -58,8 +60,10 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
 
     // Perform global reduction for initial_species_counts
     MPI_Reduce(initial_species_counts, max_counts, N_SPECIES + 1, MPI_INT64_T, MPI_SUM, 0, MPI_COMM_WORLD);
-    for (int16_t s = 1; s <= N_SPECIES; s++)
+    for (int16_t s = 1; s <= N_SPECIES; s++){
+        max_counts[s] = max_counts[s];
         max_generations[s] = 0;
+    }
 
     // Perform simulation for the specified number of generations
     for (int32_t gen = 1; gen <= num_generations; gen++)
@@ -161,16 +165,18 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
         }
 
         // Update my ghost layers and send my first and last layer to my neighbors
-        int rank_to_send = rank == 0 ? size - 1 : rank - 1;
-        MPI_Request request;
-        MPI_Irecv(next_grid[0][0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD, &request);
-        MPI_Send(next_grid[my_n][0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD);
-        MPI_Wait(&request, MPI_STATUS_IGNORE);
+        int send_to = rank == size - 1 ? 0 : rank + 1;
+        int recv_from = rank == 0 ? size - 1 : rank - 1;
 
-        rank_to_send = rank == size - 1 ? 0 : rank + 1;
-        MPI_Irecv(next_grid[my_n + 1][0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD, &request);
-        MPI_Send(next_grid[1][0], N * N, MPI_CHAR, rank_to_send, 0, MPI_COMM_WORLD);
-        MPI_Wait(&request, MPI_STATUS_IGNORE);
+        MPI_Irecv(next_grid[0][0], N * N, MPI_CHAR, recv_from, 0, MPI_COMM_WORLD, &requests[0]);
+        MPI_Isend(next_grid[my_n][0], N * N, MPI_CHAR, send_to, 0, MPI_COMM_WORLD, &requests[1]);
+
+        MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
+
+        MPI_Irecv(next_grid[my_n + 1][0], N * N, MPI_CHAR, send_to, 0, MPI_COMM_WORLD, &requests[2]);
+        MPI_Isend(next_grid[1][0], N * N, MPI_CHAR, recv_from, 0, MPI_COMM_WORLD, &requests[3]);
+        
+        MPI_Waitall(2, requests + 2, MPI_STATUSES_IGNORE);
 
         // Swap the current grid with the next grid
         char ***temp = grid;

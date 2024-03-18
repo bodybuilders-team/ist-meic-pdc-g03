@@ -27,7 +27,8 @@ for config in "${configurations[@]}"; do
         echo "Executing with $processes MPI processes and configuration: $config" 
         echo "Executing with $processes MPI processes and configuration: $config" >> "$output_file"
 
-        mpirun -host $hosts -np $processes ./life3d-mpi $config 2>&1 | tee -a "$output_file"
+        #mpirun -host $hosts -np $processes ./life3d-mpi $config 2>&1 | tee -a "$output_file"
+        srun -n $processes ./life3d-mpi $config 2>&1 | tee -a "$output_file"
         
         echo "Execution completed."
         echo "Execution completed." >> "$output_file"
