@@ -1,0 +1,38 @@
+rm -rf build/*.o ./life3d-omp
+gcc -Wall -Wextra -std=c99 -O2 -fopenmp -Iinclude -g -c src/print_result.c -o build/print_result.o
+gcc -Wall -Wextra -std=c99 -O2 -fopenmp -Iinclude -g -c src/simulation.c -o build/simulation.o
+gcc -Wall -Wextra -std=c99 -O2 -fopenmp -Iinclude -g -c src/world_gen.c -o build/world_gen.o
+gcc -Wall -Wextra -std=c99 -O2 -fopenmp -Iinclude -g -c src/life3d-omp.c -o build/life3d-omp.o
+gcc -Wall -Wextra -std=c99 -O2 -fopenmp -Iinclude -g build/print_result.o build/simulation.o build/world_gen.o build/life3d-omp.o -o life3d-omp -lm
+Executing with OMP_NUM_THREADS=1 and configuration: 1000 64 0.4 0
+21.3
+1 81443 62
+2 24563 24
+3 20080 1
+4 19016 1
+5 17576 1
+6 16905 1
+7 15793 1
+8 15174 1
+9 14807 1
+Execution completed.
+Executing with OMP_NUM_THREADS=2 and configuration: 1000 64 0.4 0
+rm -rf build/*.o ./life3d-omp
+gcc -Wall -Wextra -std=c99 -O2 -fopenmp -Iinclude -g -c src/print_result.c -o build/print_result.o
+gcc -Wall -Wextra -std=c99 -O2 -fopenmp -Iinclude -g -c src/simulation.c -o build/simulation.o
+gcc -Wall -Wextra -std=c99 -O2 -fopenmp -Iinclude -g -c src/world_gen.c -o build/world_gen.o
+gcc -Wall -Wextra -std=c99 -O2 -fopenmp -Iinclude -g -c src/life3d-omp.c -o build/life3d-omp.o
+gcc -Wall -Wextra -std=c99 -O2 -fopenmp -Iinclude -g build/print_result.o build/simulation.o build/world_gen.o build/life3d-omp.o -o life3d-omp -lm
+Executing with OMP_NUM_THREADS=1 and configuration: 1000 64 0.4 0
+21.1
+1 81443 62
+2 24563 24
+3 20080 1
+4 19016 1
+5 17576 1
+6 16905 1
+7 15793 1
+8 15174 1
+9 14807 1
+Execution completed.
+Executing with OMP_NUM_THREADS=2 and configuration: 1000 64 0.4 0

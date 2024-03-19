@@ -39,8 +39,8 @@ int main(int argc, char *argv[])
     double exec_time;
 
     // Calculate the range of x-coordinates for this process
-    int start_x = (rank * num_cells) / size;
-    int end_x = ((rank + 1) * num_cells) / size;
+    int32_t start_x = (rank * num_cells) / size;
+    int32_t end_x = ((rank + 1) * num_cells) / size;
 
     // Generate initial grid for this process
     char ***grid = gen_initial_grid_partial(num_cells, density, seed, start_x, end_x);
@@ -62,14 +62,6 @@ int main(int argc, char *argv[])
     // Print the result to stdout
     if (rank == 0)
         print_result(max_counts, max_generations);
-
-    // Free memory for the grid
-    for (int x = 0; x < end_x - start_x; x++)
-    {
-        free(grid[x][0]);
-        free(grid[x]);
-    }
-    free(grid);
 
     MPI_Finalize();
     return 0;

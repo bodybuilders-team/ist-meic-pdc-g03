@@ -169,12 +169,4 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
         // printf("Generation %d    ------------------------------\n", gen);
         // print_grid(grid, N);
     }
-
-    // Free memory for next_grid
-    for (int32_t x = 0; x < N; x++)
-    {
-        free(next_grid[x][0]);
-        free(next_grid[x]);
-    }
-    free(next_grid);
 }

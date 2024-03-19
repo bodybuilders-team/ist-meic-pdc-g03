@@ -63,7 +63,7 @@ float r4_uni()
 char ***gen_initial_grid_partial(int64_t N, float density, int input_seed, int start_x, int end_x)
 {
     int32_t x, y, z;
-    int64_t my_n = end_x - start_x;
+    int32_t my_n = end_x - start_x;
 
     char ***grid = (char ***)malloc((my_n + 2) * sizeof(char **));
     if (grid == NULL)

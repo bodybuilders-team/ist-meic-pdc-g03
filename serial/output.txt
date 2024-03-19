@@ -1,0 +1,50 @@
+rm -rf build/*.o ./life3d
+gcc -Wall -Wextra -std=c99 -O2 -Iinclude -fopenmp -g -c src/print_result.c -o build/print_result.o
+gcc -Wall -Wextra -std=c99 -O2 -Iinclude -fopenmp -g -c src/simulation.c -o build/simulation.o
+gcc -Wall -Wextra -std=c99 -O2 -Iinclude -fopenmp -g -c src/world_gen.c -o build/world_gen.o
+gcc -Wall -Wextra -std=c99 -O2 -Iinclude -fopenmp -g -c src/life3d.c -o build/life3d.o
+gcc -Wall -Wextra -std=c99 -O2 -Iinclude -fopenmp -g build/print_result.o build/simulation.o build/world_gen.o build/life3d.o -o life3d -lm
+Executing configuration: 1000 64 0.4 0
+19.8
+1 81443 62
+2 24563 24
+3 20080 1
+4 19016 1
+5 17576 1
+6 16905 1
+7 15793 1
+8 15174 1
+9 14807 1
+Execution completed.
+Executing configuration: 200 128 0.5 1000
+34.3
+1 585667 87
+2 198117 20
+3 123360 6
+4 117152 0
+5 116181 0
+6 116832 0
+7 116421 0
+8 116559 0
+9 116344 0
+Execution completed.
+Executing configuration: 10 512 0.4 0
+rm -rf build/*.o ./life3d
+gcc -Wall -Wextra -std=c99 -O2 -Iinclude -fopenmp -g -c src/print_result.c -o build/print_result.o
+gcc -Wall -Wextra -std=c99 -O2 -Iinclude -fopenmp -g -c src/simulation.c -o build/simulation.o
+gcc -Wall -Wextra -std=c99 -O2 -Iinclude -fopenmp -g -c src/world_gen.c -o build/world_gen.o
+gcc -Wall -Wextra -std=c99 -O2 -Iinclude -fopenmp -g -c src/life3d.c -o build/life3d.o
+gcc -Wall -Wextra -std=c99 -O2 -Iinclude -fopenmp -g build/print_result.o build/simulation.o build/world_gen.o build/life3d.o -o life3d -lm
+Executing configuration: 1000 64 0.4 0
+18.7
+1 81443 62
+2 24563 24
+3 20080 1
+4 19016 1
+5 17576 1
+6 16905 1
+7 15793 1
+8 15174 1
+9 14807 1
+Execution completed.
+Executing configuration: 200 128 0.5 1000
