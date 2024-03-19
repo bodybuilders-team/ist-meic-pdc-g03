@@ -64,6 +64,11 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
         max_generations[s] = 0;
     }
 
+    // To iterate over the cells of my grid, I need my neighbors, but we can start calculating the state for other layers
+    // in the meantime. So we can start in our second layer if we have more than one layer.
+    // This just happens if we have more than 2 layers, because we need to calculate the first and last layers in the end.
+    int start_x_gen = my_n > 1 ? 2 : 1;
+
     // Perform simulation for the specified number of generations
     for (int32_t gen = 1; gen <= num_generations; gen++)
     {
@@ -71,8 +76,16 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
 
         // Iterate over each cell in the grid
         #pragma omp parallel for shared(grid, next_grid, N) reduction(+:species_counts[:N_SPECIES + 1])
-        for (int32_t x = 1; x < my_n + 1; x++)
+        for (int32_t a = start_x_gen; a < my_n + 2; a++)
         {
+            // Wait for the ghost layers to be received to calculate the first and last layers
+            if (gen > 1 && a >= my_n)
+                MPI_Waitall(4, requests, MPI_STATUSES_IGNORE);
+            
+            int x = a;
+            if (x == my_n + 1)
+                x = 1; // We calculate the first layer at the end
+
             for (int32_t y = 0; y < N; y++)
             {
                 for (int32_t z = 0; z < N; z++)
@@ -163,24 +176,24 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
             }
         }
 
-        // Update my ghost layers and send my first and last layer to my neighbors
-        int send_to = rank == size - 1 ? 0 : rank + 1;
-        int recv_from = rank == 0 ? size - 1 : rank - 1;
-
-        MPI_Irecv(next_grid[0][0], N * N, MPI_CHAR, recv_from, 0, MPI_COMM_WORLD, &requests[0]);
-        MPI_Isend(next_grid[my_n][0], N * N, MPI_CHAR, send_to, 0, MPI_COMM_WORLD, &requests[1]);
-
-        MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
-
-        MPI_Irecv(next_grid[my_n + 1][0], N * N, MPI_CHAR, send_to, 0, MPI_COMM_WORLD, &requests[2]);
-        MPI_Isend(next_grid[1][0], N * N, MPI_CHAR, recv_from, 0, MPI_COMM_WORLD, &requests[3]);
-        
-        MPI_Waitall(2, requests + 2, MPI_STATUSES_IGNORE);
-
         // Swap the current grid with the next grid
         char ***temp = grid;
         grid = next_grid;
         next_grid = temp;
+
+        // Update my ghost layers and send my first and last layer to my neighbors
+        int send_to = rank == size - 1 ? 0 : rank + 1;
+        int recv_from = rank == 0 ? size - 1 : rank - 1;
+        int first_tag = 3 * gen;
+
+        MPI_Irecv(grid[0][0], N * N, MPI_CHAR, recv_from, first_tag, MPI_COMM_WORLD, &requests[0]);
+        MPI_Isend(grid[my_n][0], N * N, MPI_CHAR, send_to, first_tag, MPI_COMM_WORLD, &requests[1]);
+
+        int last_tag = 3 * gen + 1;
+        MPI_Irecv(grid[my_n + 1][0], N * N, MPI_CHAR, send_to, last_tag, MPI_COMM_WORLD, &requests[2]);
+        MPI_Isend(grid[1][0], N * N, MPI_CHAR, recv_from, last_tag, MPI_COMM_WORLD, &requests[3]);
+
+        //MPI_Waitall(4, requests, MPI_STATUSES_IGNORE);
 
         // Print for debugging
         // printf("Generation %d    ------------------------------\n", gen);
