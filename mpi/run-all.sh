@@ -28,7 +28,7 @@ for config in "${configurations[@]}"; do
         echo "Executing with $parallel_tasks MPI processes and configuration: $config" >> "$output_file"
 
         # srun –cpus-per-task=<n> -n <number of processes>  ./life3d-mpi <config>
-        srun -n $processes ./life3d-mpi $ 2>&1 | tee -a "$output_file"
+        srun -n $parallel_tasks ./life3d-mpi $ 2>&1 | tee -a "$output_file"
         echo "Execution completed."
         echo "Execution completed." >> "$output_file"
     done
