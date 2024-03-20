@@ -15,22 +15,20 @@ configurations=(
 )
 
 # Define parallel tasks
-# TODO: change to control number of threads in each processor using OMP_NUM_THREADS
-parallel_tasks=(1 2 4 8 16 32 64)
+nr_parallel_tasks=(1 2 4 8 16 32 64)
 
 # Define hosts in lab
 hosts="lab1p1,lab1p2,lab1p3,lab1p4,lab1p5,lab1p6,lab1p7,lab1p8,lab1p9,lab1p10"
 
 # Loop through each configuration
 for config in "${configurations[@]}"; do
-    for processes in "${parallel_tasks[@]}"; do
-        echo "Executing with $processes MPI processes and configuration: $config" 
-        echo "Executing with $processes MPI processes and configuration: $config" >> "$output_file"
-
-        #mpirun -host $hosts -np $processes ./life3d-mpi $config 2>&1 | tee -a "$output_file"
-        # srun -n <number of processes> –cpus-per-task=<n> ./life3d-mpi <config>
-        srun -n $processes ./life3d-mpi $config 2>&1 | tee -a "$output_file"
+    for parallel_tasks in "${nr_parallel_tasks[@]}"; do
         
+        echo "Executing with $parallel_tasks MPI processes and configuration: $config" 
+        echo "Executing with $parallel_tasks MPI processes and configuration: $config" >> "$output_file"
+
+        # srun –cpus-per-task=<n> -n <number of processes>  ./life3d-mpi <config>
+        srun -n $processes ./life3d-mpi $ 2>&1 | tee -a "$output_file"
         echo "Execution completed."
         echo "Execution completed." >> "$output_file"
     done
