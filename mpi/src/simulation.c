@@ -68,6 +68,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
     // in the meantime. So we can start in our second layer if we have more than one layer.
     // This just happens if we have more than 2 layers, because we need to calculate the first and last layers in the end.
     int start_x_gen = my_n > 1 ? 2 : 1;
+    int end_x_gen = my_n > 1 ? my_n + 2 : my_n + 1;
 
     // Perform simulation for the specified number of generations
     for (int32_t gen = 1; gen <= num_generations; gen++)
@@ -76,7 +77,7 @@ void simulation(char ***grid, int32_t N, int64_t *max_counts, int32_t *max_gener
 
         // Iterate over each cell in the grid
         #pragma omp parallel for shared(grid, next_grid, N) reduction(+:species_counts[:N_SPECIES + 1])
-        for (int32_t a = start_x_gen; a < my_n + 2; a++)
+        for (int32_t a = start_x_gen; a < end_x_gen; a++)
         {
             // Wait for the ghost layers to be received to calculate the first and last layers
             if (gen > 1 && a >= my_n)
