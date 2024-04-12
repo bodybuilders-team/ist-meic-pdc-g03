@@ -1,6 +1,6 @@
-# ist-meic-pdc-g03
+# parallel-game-of-life
 
-> Parallel and Distributed Computing project of group 03 - MEIC @ IST 2023/2024.
+> Parallel **Game of Life** explores parallel programming techniques using **OpenMP** and **MPI** to optimize the simulation of the classic Game of Life across **shared and distributed memory systems**.
 
 ## Authors
 
@@ -13,11 +13,11 @@ Master in Computer Science and Computer Engineering<br>
 Parallel and Distributed Computing - Group 03<br>
 Summer  Semester of 2023/2024
 
-## About the Project
+## About the Project ℹ️
 
 The project focuses on gaining experience in parallel programming on shared and distributed memory systems, utilizing OpenMP and MPI, respectively. The task involves implementing sequential and parallel versions of the 3D Game of Life.
 
-## Repository Structure
+## Repository Structure 📂
 
 - `serial/`: Contains the source code files for the serial implementation, along with a Makefile for compilation. Additional source files are included.
 
@@ -26,7 +26,7 @@ The project focuses on gaining experience in parallel programming on shared and 
 - `mpi/`: Contains the source code files for the MPI implementation, along with a Makefile for compilation. Additional source files and a report are included as in the other directories.
 
 
-## Instructions
+## Instructions 📝
 
 To compile and run the code, enter in the respective directory of the version you want to run.
 
